@@ -33,7 +33,7 @@ class Pokemon {
   hasEnoughMagic(skillName) {
     if (skillName.magic < this.magic) {
       console.log(
-        chalk.bgGray(
+        chalk.bgYellow(
           `magic: ${chalk.bgWhiteBright(this.magic)} --> ${
             this.name
           } has enough magic, can attack!`
@@ -42,7 +42,7 @@ class Pokemon {
       return true;
     } else {
       console.log(
-        chalk.bgYellow(
+        chalk.bgGray(
           `magic: ${chalk.bgWhiteBright(this.magic)} --> ${
             this.name
           } does not have enough magic to attack!!! Try other attackSkills or getMagic!`
@@ -60,7 +60,6 @@ class Pokemon {
     if (this.hasEnoughMagic(skillName)) {
       opponent.health -= skillName.damage;
       this.magic -= skillName.magic;
-
       console.log(
         chalk.bgRedBright(
           `${this.name} attacked ${opponent.name} with ${
@@ -78,7 +77,8 @@ class Pokemon {
     }
   }
 }
-// create new Pokemons
+
+// create new Pokemon
 let pikachu = new Pokemon("pikachu", 120, 80);
 let bulbasaur = new Pokemon("bulbasaur", 95, 120);
 
@@ -89,43 +89,43 @@ class AttackSkill {
     this.magic = magic;
   }
 }
+
 // create new skills that Pokemons can learn
 let lightning = new AttackSkill("lightning", 40, 30);
 let bombing = new AttackSkill("poisonSeed", 20, 20);
-
 pikachu.learnAttackSkill(lightning);
 pikachu.learnAttackSkill(bombing);
-
 bulbasaur.learnAttackSkill(bombing);
 bulbasaur.learnAttackSkill(lightning);
 
+// run game func
 function runGame() {
   let turns = 0;
+
   do {
-    const attcker = turns % 2 === 0 ? pikachu : bulbasaur;
-    const defender = turns % 2 === 0 ? bulbasaur : pikachu;
+    const attacker = turns % 2 === 0 ? pikachu : bulbasaur;
+    const defender = turns % 2 === 1 ? pikachu : bulbasaur;
 
     let attackSkill;
 
-    console.log("\nCurrent status:");
+    console.log("\nCurrent status:\n");
     pikachu.showStatus();
     bulbasaur.showStatus();
-
     attackSkill =
-      attcker.skills[Math.floor(Math.random() * attcker.skills.length)];
+      attacker.skills[Math.floor(Math.random() * attacker.skills.length)];
 
-    attcker.attack(attackSkill, defender);
+    attacker.attack(attackSkill, defender);
 
     turns++;
   } while (pikachu.isAlive() && bulbasaur.isAlive());
 
   if (pikachu.isAlive()) {
-    console.log(chalk.bgGreen.bold(`${pikachu.name} has won the battle!`));
+    console.log(`${pikachu.name} has won the battle!`);
   } else {
-    console.log(chalk.bgGreen.bold(`${bulbasaur.name} has won the battle!`));
+    console.log(`${bulbasaur.name} has won the battle!`);
   }
 }
 
 runGame();
 
-console.log(chalk.bgRedBright.bold("\nGame over\n"));
+console.log("\nGame over\n");
