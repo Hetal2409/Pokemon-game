@@ -1,0 +1,15 @@
+{
+  "name": "pb-project-pokemon-lite-hetal2409",
+  "version": "1.0.0",
+  "description": "You are tasked with simulating a battle between two Pokemon using JavaScript classes and methods.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
+}
