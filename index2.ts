@@ -1,6 +1,30 @@
 import chalk, { Chalk } from "chalk";
 import readlineSync from "readline-sync";
+
 console.clear();
+
+const welcome = readlineSync
+  .question(chalk.bgBlack`What is your name: `)
+  .toUpperCase();
+console.log(
+  chalk.bgGray(
+    `\nHello ${chalk.bold.cyan(welcome)}, welcome to Pokemon Battle Game`
+  )
+);
+
+console.log(
+  `\n${chalk.italic("Its time to Choose your starting Pokemon:-")}`,
+  `\nA : ${chalk.underline.magenta("pikachu")}`,
+  `\nB : ${chalk.underline.magenta("bulbasaur")} \n`
+);
+let start = readlineSync
+  .keyIn(
+    chalk.blueBright.bold(
+      `Select the Pokemon you wish to start your journey with:- A or B: `
+    ),
+    { limit: ["A", "B"] }
+  )
+  .toUpperCase();
 
 class Pokemon {
   name: string;
@@ -45,13 +69,7 @@ class Pokemon {
 
   hasEnoughMagic(skill: AttackSkill) {
     if (skill.magic < this.magic) {
-      console.log(
-        chalk.bgYellow(
-          `\nmagic: ${chalk.bgWhiteBright(this.magic)} --> ${
-            this.name
-          } attacking!`
-        )
-      );
+      console.log(chalk.bgYellow(`\n${this.name} attacking!`));
       return true;
     } else {
       console.log(
@@ -76,13 +94,13 @@ class Pokemon {
 
       console.log(
         chalk.bgRedBright(
-          `${this.name} attacked ${opponent.name} with ${chalk.bgGreenBright(
+          `${this.name} unleashed a bolt of ${chalk.bgGreenBright(
             skill.attack
-          )} now ${this.name} has ${chalk.bgGreenBright(
-            this.magic
-          )} Magic left & ${opponent.name} has ${chalk.bgGreenBright(
-            opponent.health
-          )} Health left.`
+          )} upon ${opponent.name}, expending ${chalk.bgGreenBright(
+            skill.magic
+          )} Magic Points in the process, resulting ${
+            opponent.name
+          }'s Health Points reduced by ${chalk.bgGreenBright(skill.damage)}.`
         )
       );
     } else {
@@ -119,24 +137,27 @@ bulbasaur.learnAttackSkill(lightning);
 
 function runGame() {
   let turns = 0;
-  do {
-    const attcker = turns % 2 === 0 ? pikachu : bulbasaur;
-    const defender = turns % 2 === 0 ? bulbasaur : pikachu;
+  const startingAttacker = start === "A" ? pikachu : bulbasaur;
+  let attcker = startingAttacker;
+  let defender = attcker === pikachu ? bulbasaur : pikachu;
 
+  do {
     console.log(chalk.greenBright.underline("\nCurrent status:"));
     pikachu.showStatus();
     bulbasaur.showStatus();
 
     console.log(
-      `A : ${chalk.underline(lightning.attack)}`,
-      `\nB : ${chalk.underline(bombing.attack)}`,
-      `\nC : ${chalk.underline("To abort the game")}`
+      `\n${chalk.italic(
+        "Choose your attack skill:-"
+      )} \nA : ${chalk.underline.magenta(lightning.attack)}`,
+      `\nB : ${chalk.underline.magenta(bombing.attack)}`,
+      `\nC : ${chalk.underline.magenta("To abort the game")}`
     );
 
     const choice = readlineSync
       .keyIn(
         chalk.red(
-          `\n${attcker.name} which attckSkill do u wanna attck with to ${defender.name}:- A or B : `
+          `\n${attcker.name}, which attack skill would you like to use against ${defender.name}, enter your choice:- (A, B, or C): `
         ),
         { limit: ["A", "B", "C"] }
       )
@@ -149,6 +170,10 @@ function runGame() {
     const selectedAttack = choice === "A" ? lightning : bombing;
 
     attcker.attack(selectedAttack, defender);
+
+    const firstAttacker = attcker;
+    attcker = defender;
+    defender = firstAttacker;
 
     turns++;
   } while (pikachu.isAlive() && bulbasaur.isAlive());
